@@ -28,10 +28,13 @@ def get_at(index, t):
     return value
 
 
-def create_upload_data(content_type, key, acl, bucket=None, cache_control=None,
-                       content_disposition=None):
-    access_key = settings.AWS_ACCESS_KEY_ID
-    secret_access_key = settings.AWS_SECRET_ACCESS_KEY
+def create_upload_data(content_type, key, acl, access_key=None, secret_access_key=None, security_token=None,
+                       bucket=None, cache_control=None, content_disposition=None):
+    if access_key is None:
+        access_key = settings.AWS_ACCESS_KEY_ID
+    if secret_access_key is None:
+        secret_access_key = settings.AWS_SECRET_ACCESS_KEY
+
     bucket = bucket or settings.AWS_STORAGE_BUCKET_NAME
     region = getattr(settings, 'S3DIRECT_REGION', None)
     endpoint = REGIONS.get(region, 's3.amazonaws.com')
@@ -110,5 +113,8 @@ def create_upload_data(content_type, key, acl, bucket=None, cache_control=None,
 
     if content_disposition:
         return_dict['Content-Disposition'] = content_disposition
+
+    if security_token is not None:
+        return_dict['x-amz-security-token'] = security_token
 
     return return_dict

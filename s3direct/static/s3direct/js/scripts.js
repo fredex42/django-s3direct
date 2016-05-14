@@ -105,7 +105,13 @@
         })
         form.append('file', file)
 
-        request('POST', url, form, {}, el, true, function(status, xml){
+        headers = {}
+        if(data.hasOwnProperty('x-amz-security-token')){
+            headers['x-amz-security-token'] = data['x-amz-security-token'];
+            delete data['x-amz-security-token'];
+        }
+
+        request('POST', url, form, headers, el, true, function(status, xml){
             disableSubmit(false)
             if(status !== 201) return error(el, 'Sorry, failed to upload to S3.')
             update(el, xml)

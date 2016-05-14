@@ -2,11 +2,12 @@ import os
 
 from django.forms import widgets
 from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.conf import settings
 
 
 class S3DirectWidget(widgets.TextInput):
+    policy_url = reverse_lazy('s3direct')
 
     default_html = (
         '<div class="s3direct" data-policy-url="{policy_url}">'
@@ -39,7 +40,7 @@ class S3DirectWidget(widgets.TextInput):
 
     def render(self, name, value, attrs=None):
         output = self.html.format(
-            policy_url=reverse('s3direct'),
+            policy_url=self.policy_url,
             element_id=self.build_attrs(attrs).get('id'),
             file_name=os.path.basename(value or ''),
             dest=self.dest,
