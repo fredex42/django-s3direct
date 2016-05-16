@@ -61,6 +61,9 @@ def create_upload_data(content_type, key, acl, access_key=None, secret_access_ke
             ]
         }
 
+    if security_token is not None:
+        policy_dict['conditions'].append({'x-amz-security-token': security_token})
+
     if cache_control:
         policy_dict['conditions'].append({'Cache-Control': cache_control})
 

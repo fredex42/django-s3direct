@@ -53,7 +53,20 @@ def get_upload_params(request):
         # https://aws.amazon.com/articles/1434#aws-table
         key = '%s/${filename}' % key
 
-    data = create_upload_data(
-        content_type, key, acl, bucket, cache_control, content_disposition)
+    access_key = None
+    if hasattr(request.session,'aws_access_key'):
+        access_key = request.session['aws_access_key']
+
+    secret_key = None
+    if hasattr(request.session,'aws_secret_access_key'):
+        secret_key = request.session['aws_secret_access_key']
+
+    security_token = None
+    if hasattr(request.session,'security_token'):
+        security_token = request.session['security_token']
+
+    data = create_upload_data(content_type, key, acl, bucket=bucket,
+                              access_key=access_key,secret_access_key=secret_key, security_token=security_token,
+                              cache_control=cache_control, content_disposition=content_disposition)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
