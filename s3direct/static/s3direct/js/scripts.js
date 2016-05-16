@@ -115,6 +115,7 @@
             disableSubmit(false)
             if(status !== 201) return error(el, 'Sorry, failed to upload to S3.')
             update(el, xml)
+
         })
     }
 
@@ -143,6 +144,16 @@
                     break;
                 default:
                     error(el, 'Sorry, could not get upload URL.')
+            }
+
+            var new_token = getCookie('csrftoken');
+            var csrf_elements = document.getElementsByName('csrfmiddlewaretoken');
+//            if(csrf_elements.length!=1){
+//                alert("csrf_elements: " + csrf_elements.length)
+//            }
+            for(var i=0;i<csrf_elements.length;i++){
+                //console.log(csrf_elements[i]);
+                csrf_elements[i].setAttribute('value',new_token);
             }
         })
     }
